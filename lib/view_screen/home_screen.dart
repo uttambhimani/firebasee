@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase/firebaselogic_class/firebase_calss.dart';
 import 'package:firebase/firebaselogic_class/notification.dart';
 import 'package:firebase/model_class/model.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
@@ -50,7 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: Text("demo"),
+          title: Text("Firebase"),
           actions: [
             IconButton(
               onPressed: () {
@@ -90,11 +91,6 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
 
               Text("$aji"),
-
-              ElevatedButton(onPressed: (){
-
-                voteinsertdata("1", "$aji");
-              }, child: Text("Submit")),
 
               // TextField(
               //   style: TextStyle(fontSize: 18),
@@ -190,175 +186,183 @@ class _HomeScreenState extends State<HomeScreen> {
               //   child: Text("Submit"),
               // ),
 
-              Expanded(
-                child: StreamBuilder(
-                  stream: readdata(),
-                  builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                    if (snapshot.hasError) {
-                      return Text("${snapshot.error}");
-                    } else if (snapshot.hasData) {
-                      var docList = snapshot.data!.docs;
-                      alldata.clear();
-                      for (QueryDocumentSnapshot x in docList) {
-                        var finaldata = x.data() as Map<String, dynamic>;
-                        Model m1 = Model(
-                          id: finaldata['id'],
-                          name: finaldata['name'],
-                          mobile: finaldata['mobile'],
-                          std: finaldata['std'],
-                          unniqueid: x.id,
-                        );
-                        alldata.add(m1);
-                      }
+              ElevatedButton(onPressed: (){
+                // var currentUser = FirebaseAuth.instance.currentUser;
+                // if (currentUser != null) {
+                //   return null;
+                // }
+                voteinsertdata("1", "${aji}");
+              }, child: Text("Submit")),
 
-                      return ListView.builder(
-                        itemCount: alldata.length,
-                        itemBuilder: (context, index) {
-                          return ListTile(
-                            leading: Text("${alldata[index].id}"),
-                            title: Text("${alldata[index].name}"),
-                            subtitle: Text("${alldata[index].unniqueid}"),
-                            trailing: PopupMenuButton(
-                              itemBuilder: (context) {
-                                return [
-                                  PopupMenuItem(
-                                    child: InkWell(
-                                      child: Text("update"),
-                                      onTap: () {
-                                        utxtid = TextEditingController(
-                                            text: "${alldata[index].id}");
-                                        utxtname = TextEditingController(
-                                            text: "${alldata[index].name}");
-                                        utxtmobile = TextEditingController(
-                                            text: "${alldata[index].mobile}");
-                                        utxtstd = TextEditingController(
-                                            text: "${alldata[index].std}");
-                                        Get.defaultDialog(
-                                          title: "Update Data",
-                                          titleStyle:
-                                          TextStyle(color: Colors.black),
-                                          backgroundColor: Colors.white,
-                                          content: Column(
-                                            children: [
-                                              TextField(
-                                                textInputAction:
-                                                TextInputAction.next,
-                                                controller: utxtid,
-                                                keyboardType:
-                                                TextInputType.number,
-                                                style: TextStyle(
-                                                    color: Colors.black),
-                                                decoration: InputDecoration(
-                                                  hintText: "Id",
-                                                  hintStyle: TextStyle(
-                                                      color: Colors.grey),
-                                                  enabledBorder:
-                                                  UnderlineInputBorder(
-                                                    borderSide: BorderSide(
-                                                        color: Colors
-                                                            .blue.shade900),
-                                                  ),
-                                                ),
-                                              ),
-                                              TextField(
-                                                style: TextStyle(
-                                                    color: Colors.black),
-                                                controller: utxtname,
-                                                textInputAction:
-                                                TextInputAction.next,
-                                                decoration: InputDecoration(
-                                                  hintText: "Name",
-                                                  hintStyle: TextStyle(
-                                                      color: Colors.grey),
-                                                  enabledBorder:
-                                                  UnderlineInputBorder(
-                                                    borderSide: BorderSide(
-                                                        color: Colors
-                                                            .blue.shade900),
-                                                  ),
-                                                ),
-                                              ),
-                                              TextField(
-                                                textInputAction:
-                                                TextInputAction.next,
-                                                keyboardType:
-                                                TextInputType.number,
-                                                controller: utxtmobile,
-                                                style: TextStyle(
-                                                    color: Colors.black),
-                                                decoration: InputDecoration(
-                                                  hintText: "Mobile No.",
-                                                  hintStyle: TextStyle(
-                                                      color: Colors.grey),
-                                                  enabledBorder:
-                                                  UnderlineInputBorder(
-                                                    borderSide: BorderSide(
-                                                        color: Colors
-                                                            .blue.shade900),
-                                                  ),
-                                                ),
-                                              ),
-                                              TextField(
-                                                style: TextStyle(
-                                                    color: Colors.black),
-                                                controller: utxtstd,
-                                                textInputAction:
-                                                TextInputAction.next,
-                                                decoration: InputDecoration(
-                                                  hintText: "Standard",
-                                                  hintStyle: TextStyle(
-                                                      color: Colors.grey),
-                                                  enabledBorder:
-                                                  UnderlineInputBorder(
-                                                    borderSide: BorderSide(
-                                                        color: Colors
-                                                            .blue.shade900),
-                                                  ),
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                height: 25,
-                                              ),
-                                              ElevatedButton(
-                                                onPressed: () {
-                                                  updateData(
-                                                      "${alldata[index]
-                                                          .unniqueid}",
-                                                      utxtid.text,
-                                                      utxtname.text,
-                                                      utxtmobile.text,
-                                                      utxtstd.text);
-                                                  Get.back();
-                                                },
-                                                child: Text("Update"),
-                                                style: ElevatedButton.styleFrom(
-                                                    backgroundColor:
-                                                    Colors.blue.shade900),
-                                              ),
-                                            ],
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                  PopupMenuItem(
-                                    child: Text("Delete"),
-                                    onTap: () {
-                                      deleteData("${alldata[index].unniqueid}");
-                                    },
-                                  ),
-                                ];
-                              },
-                              icon: Icon(Icons.more_vert, color: Colors.black),
-                            ),
-                          );
-                        },
-                      );
-                    }
-                    return CircularProgressIndicator();
-                  },
-                ),
-              ),
+              // Expanded(
+              //   child: StreamBuilder(
+              //     stream: readdata(),
+              //     builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+              //       if (snapshot.hasError) {
+              //         return Text("${snapshot.error}");
+              //       } else if (snapshot.hasData) {
+              //         var docList = snapshot.data!.docs;
+              //         alldata.clear();
+              //         for (QueryDocumentSnapshot x in docList) {
+              //           var finaldata = x.data() as Map<String, dynamic>;
+              //           Model m1 = Model(
+              //             id: finaldata['id'],
+              //             name: finaldata['name'],
+              //             mobile: finaldata['mobile'],
+              //             std: finaldata['std'],
+              //             unniqueid: x.id,
+              //           );
+              //           alldata.add(m1);
+              //         }
+              //
+              //         return ListView.builder(
+              //           itemCount: alldata.length,
+              //           itemBuilder: (context, index) {
+              //             return ListTile(
+              //               leading: Text("${alldata[index].id}"),
+              //               title: Text("${alldata[index].name}"),
+              //               subtitle: Text("${alldata[index].unniqueid}"),
+              //               trailing: PopupMenuButton(
+              //                 itemBuilder: (context) {
+              //                   return [
+              //                     PopupMenuItem(
+              //                       child: InkWell(
+              //                         child: Text("update"),
+              //                         onTap: () {
+              //                           utxtid = TextEditingController(
+              //                               text: "${alldata[index].id}");
+              //                           utxtname = TextEditingController(
+              //                               text: "${alldata[index].name}");
+              //                           utxtmobile = TextEditingController(
+              //                               text: "${alldata[index].mobile}");
+              //                           utxtstd = TextEditingController(
+              //                               text: "${alldata[index].std}");
+              //                           Get.defaultDialog(
+              //                             title: "Update Data",
+              //                             titleStyle:
+              //                             TextStyle(color: Colors.black),
+              //                             backgroundColor: Colors.white,
+              //                             content: Column(
+              //                               children: [
+              //                                 TextField(
+              //                                   textInputAction:
+              //                                   TextInputAction.next,
+              //                                   controller: utxtid,
+              //                                   keyboardType:
+              //                                   TextInputType.number,
+              //                                   style: TextStyle(
+              //                                       color: Colors.black),
+              //                                   decoration: InputDecoration(
+              //                                     hintText: "Id",
+              //                                     hintStyle: TextStyle(
+              //                                         color: Colors.grey),
+              //                                     enabledBorder:
+              //                                     UnderlineInputBorder(
+              //                                       borderSide: BorderSide(
+              //                                           color: Colors
+              //                                               .blue.shade900),
+              //                                     ),
+              //                                   ),
+              //                                 ),
+              //                                 TextField(
+              //                                   style: TextStyle(
+              //                                       color: Colors.black),
+              //                                   controller: utxtname,
+              //                                   textInputAction:
+              //                                   TextInputAction.next,
+              //                                   decoration: InputDecoration(
+              //                                     hintText: "Name",
+              //                                     hintStyle: TextStyle(
+              //                                         color: Colors.grey),
+              //                                     enabledBorder:
+              //                                     UnderlineInputBorder(
+              //                                       borderSide: BorderSide(
+              //                                           color: Colors
+              //                                               .blue.shade900),
+              //                                     ),
+              //                                   ),
+              //                                 ),
+              //                                 TextField(
+              //                                   textInputAction:
+              //                                   TextInputAction.next,
+              //                                   keyboardType:
+              //                                   TextInputType.number,
+              //                                   controller: utxtmobile,
+              //                                   style: TextStyle(
+              //                                       color: Colors.black),
+              //                                   decoration: InputDecoration(
+              //                                     hintText: "Mobile No.",
+              //                                     hintStyle: TextStyle(
+              //                                         color: Colors.grey),
+              //                                     enabledBorder:
+              //                                     UnderlineInputBorder(
+              //                                       borderSide: BorderSide(
+              //                                           color: Colors
+              //                                               .blue.shade900),
+              //                                     ),
+              //                                   ),
+              //                                 ),
+              //                                 TextField(
+              //                                   style: TextStyle(
+              //                                       color: Colors.black),
+              //                                   controller: utxtstd,
+              //                                   textInputAction:
+              //                                   TextInputAction.next,
+              //                                   decoration: InputDecoration(
+              //                                     hintText: "Standard",
+              //                                     hintStyle: TextStyle(
+              //                                         color: Colors.grey),
+              //                                     enabledBorder:
+              //                                     UnderlineInputBorder(
+              //                                       borderSide: BorderSide(
+              //                                           color: Colors
+              //                                               .blue.shade900),
+              //                                     ),
+              //                                   ),
+              //                                 ),
+              //                                 SizedBox(
+              //                                   height: 25,
+              //                                 ),
+              //                                 ElevatedButton(
+              //                                   onPressed: () {
+              //                                     updateData(
+              //                                         "${alldata[index]
+              //                                             .unniqueid}",
+              //                                         utxtid.text,
+              //                                         utxtname.text,
+              //                                         utxtmobile.text,
+              //                                         utxtstd.text);
+              //                                     Get.back();
+              //                                   },
+              //                                   child: Text("Update"),
+              //                                   style: ElevatedButton.styleFrom(
+              //                                       backgroundColor:
+              //                                       Colors.blue.shade900),
+              //                                 ),
+              //                               ],
+              //                             ),
+              //                           );
+              //                         },
+              //                       ),
+              //                     ),
+              //                     PopupMenuItem(
+              //                       child: Text("Delete"),
+              //                       onTap: () {
+              //                         deleteData("${alldata[index].unniqueid}");
+              //                       },
+              //                     ),
+              //                   ];
+              //                 },
+              //                 icon: Icon(Icons.more_vert, color: Colors.black),
+              //               ),
+              //             );
+              //           },
+              //         );
+              //       }
+              //       return CircularProgressIndicator();
+              //     },
+              //   ),
+              // ),
             ],
           ),
         ),

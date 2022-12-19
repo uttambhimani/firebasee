@@ -75,21 +75,21 @@ Future<List<String?>> userprofile() async {
   ];
 }
 
-void insertdata(String id, String name, String mobile, String std) {
-  FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
-  CollectionReference collectionReference =
-      firebaseFirestore.collection("Student");
-
-  collectionReference
-      .add({
-        "id": "$id",
-        "name": "$name",
-        "mobile": "$mobile",
-        "std": "$std",
-      })
-      .then((value) => print("success"))
-      .catchError((error) => print("Error $error"));
-}
+// void insertdata(String id, String name, String mobile, String std) {
+//   FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+//   CollectionReference collectionReference =
+//       firebaseFirestore.collection("Student");
+//
+//   collectionReference
+//       .add({
+//         "id": "$id",
+//         "name": "$name",
+//         "mobile": "$mobile",
+//         "std": "$std",
+//       })
+//       .then((value) => print("success"))
+//       .catchError((error) => print("Error $error"));
+// }
 
 void voteinsertdata(String id, String vote) {
   FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
@@ -99,22 +99,22 @@ void voteinsertdata(String id, String vote) {
       .add({"id": "$id", "vote": "$vote"}).then((value) => print("success")).catchError((error) => print("Error $error"));
 }
 
-Stream<QuerySnapshot<Map<String, dynamic>>> readdata() {
-  FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
-  return firebaseFirestore.collection("Student").snapshots();
-}
-
-void deleteData(String key) {
-  FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
-  firebaseFirestore.collection("Student").doc("$key").delete();
-}
-
-void updateData(String key, String id, String name, String mobile, String std) {
-  FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
-  firebaseFirestore.collection("Student").doc("$key").set({
-    "id": "$id",
-    "name": "$name",
-    "mobile": "$mobile",
-    "std": "$std",
-  });
-}
+// Stream<QuerySnapshot<Map<String, dynamic>>> readdata() {
+//   FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+//   return firebaseFirestore.collection("Student").snapshots();
+// }
+//
+// void deleteData(String key) {
+//   FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+//   firebaseFirestore.collection("Student").doc("$key").delete();
+// }
+//
+// void updateData(String key, String id, String name, String mobile, String std) {
+//   FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+//   firebaseFirestore.collection("Student").doc("$key").set({
+//     "id": "$id",
+//     "name": "$name",
+//     "mobile": "$mobile",
+//     "std": "$std",
+//   });
+// }
